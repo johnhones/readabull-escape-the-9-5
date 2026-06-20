@@ -1,0 +1,617 @@
+<!DOCTYPE html><!-- build:20260620210000E95 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<title>Readerbull Audit: Escape the 9&ndash;5</title>
+<style>
+  :root {
+    --teal:     #00B5AD;
+    --teal-l:   #E0F7F6;
+    --teal-d:   #007A75;
+    --orange:   #F47421;
+    --orange-l: #FFF0E6;
+    --orange-d: #C05A10;
+    --navy:     #1B3A48;
+    --mid:      #4A6070;
+    --muted:    #7A909E;
+    --light:    #F5F7F8;
+    --border:   #DDE3E7;
+    --white:    #FFFFFF;
+    --black:    #111111;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:#F9FAFB; color:var(--black); line-height:1.6; font-size:13px; }
+
+  .wrap { max-width:1260px; margin:0 auto; padding:40px 32px; }
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .mb { margin-bottom:24px; }
+
+  .sec-label { font-size:14px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--orange); margin:40px 0 16px; display:flex; align-items:center; gap:12px; }
+  .sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .card { background:var(--white); border-radius:6px; padding:28px 32px; border:1px solid var(--border); }
+  .card-hdr { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--orange); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+  .card-title { font-size:15px; font-weight:700; color:var(--teal-d); margin-bottom:10px; line-height:1.3; }
+
+  .score-panel { background:var(--navy); border-radius:6px; padding:32px; }
+  .score-eyebrow { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:var(--orange); margin-bottom:12px; }
+  .score-num { font-size:80px; font-weight:900; color:var(--teal); line-height:1; }
+  .score-denom { font-size:28px; color:var(--orange); font-weight:300; }
+  .score-range { display:inline-block; margin-top:10px; background:rgba(244,116,33,.18); border:1px solid rgba(244,116,33,.4); color:#fff; padding:4px 16px; border-radius:3px; font-size:11px; font-weight:400; letter-spacing:1px; }
+  .bar-row { margin-top:28px; }
+  .bar-item { margin-bottom:13px; }
+  .bar-item:last-child { margin-bottom:0; }
+  .bar-meta { display:flex; justify-content:space-between; margin-bottom:5px; }
+  .bar-lbl { font-size:12px; color:rgba(255,255,255,.7); }
+  .bar-val { font-size:12px; font-weight:700; color:rgba(255,255,255,.9); }
+  .bar-track { height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:3px; }
+
+  .stat-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-top:20px; }
+  .stat-cell { background:var(--white); padding:16px; text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .stat-cell > div:last-child { margin-top:auto; padding-top:6px; }
+  .stat-v { font-size:22px; font-weight:800; color:var(--orange); }
+  .stat-l { font-size:12px; color:var(--mid); margin-top:3px; line-height:1.4; }
+
+  .badge { display:inline-block; padding:3px 9px; border-radius:3px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+  .b-teal   { background:var(--teal-l);   color:var(--teal-d); }
+  .b-orange { background:var(--orange-l); color:var(--orange-d); }
+  .b-navy   { background:rgba(27,58,72,.08); color:var(--navy); }
+  .b-muted  { background:var(--light);    color:var(--muted); }
+
+  .item { display:flex; gap:14px; align-items:flex-start; margin-bottom:20px; }
+  .item:last-child { margin-bottom:0; }
+  .item-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:1px; }
+  .icon-teal   { background:var(--teal-l);   color:var(--teal-d); }
+  .icon-orange { background:var(--orange-l); color:var(--orange-d); }
+  .item-t { font-size:15px; font-weight:700; color:var(--teal-d); margin-bottom:3px; }
+  .item-b { font-size:12px; color:var(--mid); line-height:1.6; }
+
+  .callout { border-left:3px solid var(--teal); background:var(--teal-l); padding:14px 18px; border-radius:0 4px 4px 0; font-size:12px; color:var(--navy); line-height:1.65; }
+  .callout-orange { border-left-color:var(--orange); background:var(--orange-l); }
+  .callout strong { color:var(--black); }
+
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { background:var(--navy); color:rgba(255,255,255,.85); padding:9px 12px; text-align:left; font-weight:600; font-size:10px; letter-spacing:.5px; text-transform:uppercase; }
+  td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--mid); }
+  tr:last-child td { border-bottom:none; }
+  tr:nth-child(even) td { background:var(--light); }
+  .tc { text-align:center; } .tr { text-align:right; }
+
+  .step { display:flex; gap:16px; align-items:flex-start; padding:18px 20px; border-radius:4px; margin-bottom:10px; }
+  .step:last-child { margin-bottom:0; }
+  .step-teal   { background:var(--teal-l);   border-left:4px solid var(--teal); }
+  .step-orange { background:var(--orange-l); border-left:4px solid var(--orange); }
+  .step-num { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:#fff; }
+  .num-teal   { background:var(--teal); }
+  .num-orange { background:var(--orange); }
+  .step-t { font-size:13px; font-weight:700; color:var(--teal-d); margin-bottom:4px; }
+  .step-b { font-size:12px; color:var(--mid); line-height:1.55; }
+
+  .banner { background:var(--navy); color:#fff; border-radius:6px; padding:24px 32px; margin-bottom:24px; }
+  .banner h3 { font-size:15px; font-weight:700; margin-bottom:6px; color:#fff; }
+  .banner p  { font-size:12px; color:rgba(255,255,255,.7); line-height:1.65; }
+  .banner-stat { display:inline-block; background:var(--teal); border:1px solid var(--teal-d); color:#fff; padding:8px 18px; border-radius:3px; font-size:13px; font-weight:400; margin:8px 6px 0 0; }
+
+  .hb-card { background:var(--white); border:1px solid var(--border); border-top:4px solid var(--teal); border-radius:6px; padding:28px 32px; margin-bottom:24px; }
+  .hb-eyebrow { font-size:18px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--teal-d); margin-bottom:8px; }
+
+  .tip { position:relative; display:inline-flex; align-items:center; gap:5px; }
+  .tip-q { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.15); color:rgba(255,255,255,.55); font-size:8px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; cursor:default; flex-shrink:0; }
+  .tip-box { display:none; position:absolute; left:0; bottom:calc(100% + 8px); background:#fff; color:#1B3A48; font-size:11px; line-height:1.55; padding:9px 12px; border-radius:4px; width:210px; box-shadow:0 4px 20px rgba(0,0,0,.25); z-index:100; pointer-events:none; }
+  .tip-box::after { content:''; position:absolute; top:100%; left:8px; border:5px solid transparent; border-top-color:#fff; }
+  .tip:hover .tip-box { display:block; }
+
+  .ftr { background:var(--navy); color:rgba(255,255,255,.35); text-align:center; padding:22px; font-size:11px; }
+
+  .mob-bar { display:none; position:fixed; top:0; left:0; right:0; height:80px; background:var(--navy); z-index:500; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .mob-logo img { height:77px; width:auto; display:block; }
+  .mob-hamburger { background:none; border:none; cursor:pointer; padding:6px; display:flex; flex-direction:column; gap:5px; }
+  .mob-hamburger span { display:block; width:22px; height:2px; background:#fff; border-radius:2px; }
+  .mob-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:350; }
+  .mob-overlay.open { display:block; }
+
+  @media(max-width:900px){
+    .g2{ grid-template-columns:1fr; gap:16px; }
+    .g2>*{ min-width:0; width:100%; }
+    .kw-tool{ grid-template-columns:1fr; }
+    .wrap{ padding:24px 16px; }
+  }
+  @media(max-width:768px){
+    body{ overflow-x:hidden; }
+    .mob-bar{ display:flex; }
+    .sidebar{ transform:translateX(-100%); transition:transform .25s ease; }
+    .sidebar.open{ transform:translateX(0); }
+    .main{ margin-left:0 !important; padding-top:80px; }
+    [id]{ scroll-margin-top:90px; }
+    .score-panel{ padding:20px; }
+    .score-num{ font-size:56px; }
+    .score-denom{ font-size:22px; }
+    .stat-strip{ grid-template-columns:1fr 1fr; }
+    .kw-table td,.kw-table th{ padding:7px 8px; font-size:11px; }
+    .scroll-top{ bottom:20px; right:16px; }
+  }
+  @media(max-width:600px){
+    .wrap{ padding:14px 12px; }
+    .card{ padding:16px 14px; }
+    .hb-eyebrow{ font-size:14px; }
+    .step{ padding:12px 14px; }
+    .stat-strip{ grid-template-columns:1fr; }
+  }
+
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:220px; background:var(--navy); z-index:400; display:flex; flex-direction:column; border-right:1px solid rgba(255,255,255,.07); overflow-y:auto; }
+  .sb-logo { padding:24px 12px 20px; border-bottom:1px solid rgba(255,255,255,.07); text-align:center; }
+  .sb-logo a { display:block; line-height:0; }
+  .sb-logo img { height:120px; width:auto; display:inline-block; position:relative; left:-8px; }
+  .sb-nav { padding:16px 10px; flex:1; }
+  .sb-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.7); padding:0 8px; margin:16px 0 6px; }
+  .sb-label:first-child { margin-top:0; }
+  .sb-nav a { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:5px; text-decoration:none; color:rgba(255,255,255,.5); font-size:12px; margin-bottom:2px; transition:background .15s,color .15s; }
+  .sb-nav a i { font-size:16px; flex-shrink:0; }
+  .sb-nav a:hover,.sb-nav a.active { background:rgba(0,181,173,.12); color:var(--teal); }
+  .sb-nav a.act { color:rgba(244,116,33,.65); }
+  .sb-nav a.act:hover { background:rgba(244,116,33,.1); color:var(--orange); }
+  .sb-divider { border:none; border-top:1px solid rgba(255,255,255,.07); margin:12px 0; }
+  .main { margin-left:220px; }
+
+  .kw-tool { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+  .kw-panel { background:var(--white); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+  .kw-panel-hdr { background:#0d1f35; color:#fff; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; min-height:94px; box-sizing:border-box; }
+  .kw-panel-hdr.rec { background:#0d1f35; }
+  .kw-panel-hdr span { font-size:13px; font-weight:700; }
+  .kw-count { background:var(--teal); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .kw-panel-hdr.rec .kw-count { background:var(--orange); }
+  .kw-search { padding:12px 14px; border-bottom:1px solid var(--border); display:flex; gap:8px; }
+  .kw-search input { flex:1; border:1px solid var(--border); border-radius:4px; padding:7px 10px; font-size:12px; outline:none; color:var(--black); }
+  .kw-search input:focus { border-color:var(--teal); }
+  .kw-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .kw-table th { background:var(--light); color:var(--mid); padding:8px 12px; text-align:left; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; border-bottom:1px solid var(--border); }
+  .kw-table td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--mid); }
+  .kw-table tr:last-child td { border-bottom:none; }
+  .kw-table tr:hover td { background:var(--light); }
+  .kw-table .kw-word { color:var(--navy); font-weight:500; }
+  .kw-vol { font-weight:600; color:var(--navy); }
+  .comp-high { display:inline-block; background:#FEE2E2; color:#B91C1C; font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px; }
+  .comp-med  { display:inline-block; background:#FEF3C7; color:#92400E; font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px; }
+  .comp-low  { display:inline-block; background:var(--teal-l); color:var(--teal-d); font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px; }
+  .kw-add { background:none; border:1px solid var(--border); border-radius:3px; padding:3px 8px; font-size:10px; color:var(--muted); cursor:pointer; transition:all .15s; }
+  .kw-add:hover { border-color:var(--teal); color:var(--teal); background:var(--teal-l); }
+
+  .scroll-top { position:fixed; bottom:28px; right:28px; z-index:400; width:44px; height:44px; border-radius:50%; background:var(--navy); color:#fff; border:2px solid var(--teal); font-size:20px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; display:flex; align-items:center; justify-content:center; }
+  .scroll-top.visible { opacity:1; pointer-events:auto; }
+  [id] { scroll-margin-top:20px; }
+</style>
+</head>
+<body>
+
+<div class="mob-bar">
+  <div class="mob-logo"><a href="#score"><img src="logo3.png" alt="Readerbull"></a></div>
+  <button class="mob-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+<div class="mob-overlay" id="mob-overlay" onclick="toggleSidebar()"></div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sb-logo"><a href="#score"><img src="logo3.png" alt="Readerbull"></a></div>
+  <nav class="sb-nav">
+    <div class="sb-label">Navigate</div>
+    <a href="#score"><i class="ti ti-chart-bar"></i>Overview</a>
+    <a href="#competitors"><i class="ti ti-users"></i>Market Analysis</a>
+    <a href="#marketing"><i class="ti ti-speakerphone"></i>Marketing Strategy</a>
+    <a href="#keywords"><i class="ti ti-search"></i>Keywords</a>
+    <a href="#quick-wins"><i class="ti ti-bolt"></i>Quick Wins</a>
+    <hr class="sb-divider">
+    <div class="sb-label">Tools</div>
+    <a href="#" class="act"><i class="ti ti-ad-2"></i>Ad Campaigns</a>
+    <a href="#" class="act"><i class="ti ti-book-upload"></i>Build Your ARC</a>
+    <a href="#" class="act"><i class="ti ti-star"></i>Get Reviews</a>
+    <hr class="sb-divider">
+    <div class="sb-label">Marketplaces</div>
+    <a href="#" onclick="return false;" class="act" style="background:rgba(244,116,33,.12);color:var(--orange);"><i class="ti ti-brand-amazon"></i>Amazon KDP</a>
+    <a href="#" onclick="return false;" class="act"><i class="ti ti-brand-tiktok"></i>TikTok Shop</a>
+    <a href="#" onclick="return false;" class="act"><i class="ti ti-building-store"></i>Barnes &amp; Noble</a>
+    <a href="#" onclick="return false;" class="act"><i class="ti ti-brand-apple"></i>Apple Books</a>
+  </nav>
+</div>
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<div class="main">
+<div class="wrap" id="score">
+
+<!-- SCORE + SUMMARY -->
+<div class="g2 mb">
+  <div style="border-radius:6px;overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;">
+    <!-- Score + Cover -->
+    <div style="background:var(--navy);padding:32px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+        <div>
+          <div class="score-eyebrow">Discoverability Score</div>
+          <div><span class="score-num" style="color:#00B5AD;">42</span><span class="score-denom">&thinsp;/ 100</span></div>
+          <div class="score-range" style="font-weight:400;">Moderate</div>
+        </div>
+        <div style="width:130px;height:170px;background:rgba(255,255,255,.06);border-radius:4px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;right:40px;">
+          <div style="text-align:center;padding:10px;">
+            <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;margin-bottom:6px;">ESCAPE THE</div>
+            <div style="font-size:22px;font-weight:900;color:#fff;line-height:1;">9&ndash;5</div>
+            <div style="width:40px;height:2px;background:var(--teal);margin:8px auto;"></div>
+            <div style="font-size:8px;color:rgba(255,255,255,.5);line-height:1.4;">Upload cover image<br>when available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Progress bars -->
+    <div style="background:var(--navy);padding:28px 32px 32px;">
+    <div class="bar-row">
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Demand <span class="tip-q">?</span><span class="tip-box">How much buyer demand exists for this niche on Amazon, based on the number of books actively selling and estimated monthly revenue.</span></span><span class="bar-val">14 / 20</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--teal);"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Competition <span class="tip-q">?</span><span class="tip-box">How competitive this niche is. The freedom-based business keyword space is growing but still accessible for a well-positioned new title.</span></span><span class="bar-val">10 / 20</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--orange);"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Reviews <span class="tip-q">?</span><span class="tip-box">Written reviews on your Amazon listing. You currently have 0 reviews. Building to 15 verified reviews is the first milestone before running ads.</span></span><span class="bar-val">0</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--orange);"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Organic Ranking <span class="tip-q">?</span><span class="tip-box">Your book is already appearing on page one for the target keywords. This is a strong organic signal for a brand-new title.</span></span><span class="bar-val">Page 1</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--teal);"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Growth Potential <span class="tip-q">?</span><span class="tip-box">A secondary book &mdash; the freedom-based business model title &mdash; represents an immediate additional revenue stream in the same niche.</span></span><span class="bar-val">16 / 20</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--teal);"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-meta"><span class="bar-lbl tip">Amazon Ads <span class="tip-q">?</span><span class="tip-box">Ads are the highest-leverage action once reviews are in place. The ceiling competitor earns £3,367/month with no ads running on the core keyword. This gap is a real opportunity.</span></span><span class="bar-val">Not Active</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%;"></div></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- BSR COMPARISON -->
+    <div style="background:var(--navy);padding:28px 32px 32px;flex:1;border-top:1px solid rgba(255,255,255,.06);">
+      <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:20px;">Best Seller Rank</div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Your book</div>
+        <div style="font-size:32px;font-weight:700;color:var(--teal);line-height:1;">522,537</div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Niche ceiling</div>
+        <div style="font-size:32px;font-weight:700;color:rgba(255,255,255,.7);line-height:1;">4,065</div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7;">The top-selling title in your niche carries a BSR of 4,065 and earns <span style="color:var(--teal);font-weight:700;">£3,367/month</span>. Your book is very new and the BSR will move quickly once reviews and ads are active. The gap between where you are and the ceiling is the opportunity.</div>
+    </div>
+
+  </div><!-- end panel -->
+
+  <div style="display:flex;flex-direction:column;gap:20px;">
+    <!-- BOOK SUMMARY -->
+    <div class="card">
+      <div class="card-hdr">Book Summary</div>
+      <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+        <div style="font-size:22px;font-weight:400;color:#111111;line-height:1.35;margin-bottom:4px;">Escape the 9&ndash;5: A Personal Transformation Self-Help Guide to Starting a Freedom-Based Business</div>
+        <div style="font-size:15px;color:var(--orange);margin-bottom:8px;">Amazon.co.uk &mdash; Kindle Edition</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--mid);">No reviews yet &nbsp;&middot;&nbsp; 236 pages &nbsp;&middot;&nbsp; Pre-order / New</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;"><em>Escape the 9&ndash;5</em> is a personal transformation and business guide targeting readers who want to leave employment and build a freedom-based business. Available as a Kindle edition priced at £0.77. The book is already appearing on page one organically for the target keyword before any advertising has run.</p>
+      <p style="font-size:13px;font-weight:700;color:var(--mid);line-height:1.6;">The biggest opportunity right now is &ldquo;freedom based business&rdquo; and &ldquo;freedom based business book.&rdquo; The ceiling book in this niche earns £3,367/month. Reviews are the first step to unlocking that ceiling.</p>
+      <div class="stat-strip">
+        <div class="stat-cell">
+          <div class="stat-v">Page 1</div>
+          <div class="stat-l">Organic Ranking for Target Keywords</div>
+          <div><span style="display:inline-block;margin-top:6px;font-size:10px;background:var(--teal-l);color:var(--teal-d);padding:2px 10px;border-radius:20px;font-weight:700;">&#10003; Strong Start</span></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-v">£3,367/mo</div>
+          <div class="stat-l">Niche Ceiling Revenue</div>
+          <div><span style="display:inline-block;margin-top:6px;font-size:10px;background:var(--teal-l);color:var(--teal-d);padding:2px 10px;border-radius:20px;font-weight:700;">&#10003; Real Demand</span></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-v" style="color:var(--orange);">Evergreen</div>
+          <div class="stat-l">Content Type</div>
+          <div><span style="display:inline-block;margin-top:6px;font-size:10px;background:var(--teal-l);color:var(--teal-d);padding:2px 10px;border-radius:20px;font-weight:700;">&#10003; Stays Relevant</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFESSIONAL ASSESSMENT -->
+    <div class="card">
+      <div class="card-hdr">Professional Assessment</div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Your book is already on page one organically for the core keywords before a single review has been written. That is a genuinely strong signal for a new title. The freedom-based business space on Amazon is active, the ceiling is £3,367/month, and you are already visible.</p>
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">The price point of £0.77 is fine for launch but the paperback format will unlock significantly more revenue. Every top competitor in this space earns through physical books, not Kindle alone.</p>
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:14px;">Reviews are everything right now. At 0 reviews, ad spend converts poorly. At 15 reviews, you are credible. At 25+, you become competitive with titles that have been live for years. An ARC campaign is the fastest and most cost-effective path to that milestone.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="badge b-teal">Page 1 Organic</span>
+        <span class="badge b-teal">Target Keywords Active</span>
+        <span class="badge b-orange">0 Reviews</span>
+        <span class="badge b-orange">No Ads Running</span>
+        <span class="badge b-orange">Kindle Only</span>
+        <span class="badge b-navy">New Title</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- INSIGHT BANNER -->
+<div class="banner mb">
+  <h3>&#128161; Already on Page One &mdash; Now Make It Count.</h3>
+  <p>Your book is appearing organically for &ldquo;freedom based business&rdquo; before any reviews or ad spend. The ceiling competitor &mdash; <strong style="color:#fff;">The Freedom-Based Business Method (hardcover, BSR 4,065)</strong> &mdash; earns £3,367/month. It has 115 reviews and no ads on the primary keyword. The gap between your current position and that ceiling is: reviews, a paperback edition, and a targeted ads campaign.</p>
+  <div>
+    <span class="banner-stat">Currently: £0.77/mo, 1 sale</span>
+    <span class="banner-stat">Ceiling: £3,367/mo, 178 sales/mo (115 reviews)</span>
+  </div>
+</div>
+
+<!-- MARKETING STRATEGY -->
+<div id="marketing" style="position:relative;top:-48px;"></div>
+<div class="sec-label">Marketing Strategy</div>
+
+<!-- STEP 1 -->
+<div class="card mb">
+  <div class="hb-eyebrow">Step 1: Price the Kindle Correctly and Publish a Paperback</div>
+  <p style="font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:16px;">At £0.77, the Kindle is priced as a launch teaser, not a commercial product. The ceiling competitor&rsquo;s Kindle edition sells at £10.99 and earns £219/month from ebooks alone. The hardcover earns £3,367/month. Publishing a paperback edition is the single highest-impact format change available to you.</p>
+  <div class="item">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Publish a paperback through KDP Print</div>
+      <div class="item-b">A paperback cover is the ad in Amazon Sponsored Products. Physical books convert at a higher rate than Kindle thumbnails and buyers in the business-improvement space expect to pay £12&ndash;£16 for a paperback. KDP Print setup is straightforward and the Kindle edition stays live alongside it on the same listing page.</div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Consider raising the Kindle price once reviews are established</div>
+      <div class="item-b">At 0 reviews, a low Kindle price encourages trial. At 15&ndash;25 reviews, raise it to £4.99&ndash;£7.99. At that price with good reviews, conversion improves significantly and royalties increase. The ceiling title is priced at £10.99 ebook and earns 20 sales a month.</div>
+    </div>
+  </div>
+  <div class="item" style="margin-bottom:0;">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Use both formats in Amazon Ads once reviews are live</div>
+      <div class="item-b">Run Sponsored Products on the paperback. Paperback covers dominate search results visually and carry more authority than a plain Kindle listing. Bidding on &ldquo;freedom based business book&rdquo; and &ldquo;escape the 9 to 5 book&rdquo; with a physical product will outperform a Kindle-only listing.</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:20px;"><span style="font-size:28px;color:#F47421;line-height:1;">&#8595;</span></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="card mb">
+  <div class="hb-eyebrow">Step 2: Build to 15 Reviews Before Running Ads</div>
+  <p style="font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:16px;">Zero reviews is the most urgent issue. Organic visibility is already there. The missing piece is social proof. A buyer landing on your page for the first time, with no reviews and a £0.77 price, reads uncertainty. Fifteen genuine reviews transforms the perception of the title and makes ad spend work.</p>
+  <div class="item">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Run an ARC campaign through BookSirens or Booksprout</div>
+      <div class="item-b">Both platforms connect authors with readers who have opted in to receive free books in exchange for honest reviews. BookSirens charges per download and Booksprout has a free tier. The business-improvement and personal-development readership on these platforms is large. A focused campaign could generate 15&ndash;30 reviews within 4&ndash;6 weeks.</div>
+    </div>
+  </div>
+  <div class="item" style="margin-bottom:0;">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Add a review request inside the book</div>
+      <div class="item-b">Place a warm, natural ask at the mid-point and at the back of the book. Readers who enjoyed it simply need a prompt. Do not ask for a specific star rating. A genuine request for an honest review is Amazon-compliant and effective.</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:20px;"><span style="font-size:28px;color:#F47421;line-height:1;">&#8595;</span></div>
+</div>
+
+<!-- STEP 3 -->
+<div class="card mb">
+  <div class="hb-eyebrow">Step 3: Optimise Your KDP Keywords for Buyer Intent</div>
+  <p style="font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:16px;">Being on page one for &ldquo;freedom based business&rdquo; is excellent. The keyword metadata is clearly working. But Amazon gives you 7 keyword fields with up to 50 characters each. All 7 should be working to reach different buyer-intent searches in this niche &mdash; not just variations of the same term.</p>
+  <div class="item">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Target the &ldquo;escape the 9 to 5&rdquo; keyword variations specifically</div>
+      <div class="item-b">The book title is the keyword. Variations like &ldquo;escape 9 to 5 book,&rdquo; &ldquo;quit your job book,&rdquo; and &ldquo;how to escape the rat race&rdquo; are buyer-intent searches with real volume. These are the searches made by people who have already decided to make a change &mdash; exactly your reader.</div>
+    </div>
+  </div>
+  <div class="item" style="margin-bottom:0;">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Use the Readerbull recommended keywords in this audit</div>
+      <div class="item-b">The keyword panel below contains the buyer-intent terms identified in this research. Copy them directly into your 7 KDP keyword fields. Prioritise the terms marked as Priority first, then Best Fit.</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:20px;"><span style="font-size:28px;color:#F47421;line-height:1;">&#8595;</span></div>
+</div>
+
+<!-- STEP 4 -->
+<div class="card mb">
+  <div class="hb-eyebrow">Step 4: Publish a Second Title &mdash; &ldquo;Freedom Based Business Model&rdquo;</div>
+  <p style="font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:16px;">Research identifies &ldquo;freedom based business model&rdquo; as a secondary keyword with active buyer demand and a separate competitor set. A second book targeting this term creates a catalogue that generates from multiple search paths simultaneously. Two titles in the same niche reinforce each other&rsquo;s authority and increase total discoverability.</p>
+  <div class="item">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">The second title increases catalogue authority immediately</div>
+      <div class="item-b">When a buyer searches &ldquo;freedom based business,&rdquo; seeing two titles by the same author signals credibility. Amazon also cross-promotes books by the same author within the listing. Two books in the same niche creates a reinforcing effect that a single title cannot replicate.</div>
+    </div>
+  </div>
+  <div class="item" style="margin-bottom:0;">
+    <div class="item-icon icon-orange">&#10003;</div>
+    <div>
+      <div class="item-t">Use your existing expertise &mdash; the content is already there</div>
+      <div class="item-b">A book titled around &ldquo;the freedom based business model&rdquo; is a natural companion to Escape the 9&ndash;5. It targets a buyer who is slightly further along in their thinking &mdash; less &ldquo;how do I escape?&rdquo; and more &ldquo;what model do I build?&rdquo; This is the same reader at the next stage of their journey.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET ANALYSIS -->
+<div id="competitors" style="position:relative;top:-48px;"></div>
+<div class="sec-label">Market Analysis</div>
+
+<div class="callout mb" style="margin-bottom:18px;">
+  The freedom-based business niche on Amazon is led by a single dominant title earning £3,367/month from a hardcover with 115 reviews and no Amazon Ads on the primary keyword. That gap &mdash; no ads from the market leader &mdash; is a direct opportunity for a well-reviewed new entrant with a targeted paid campaign.
+</div>
+
+<div class="g2 mb">
+  <div class="card">
+    <div class="card-hdr">Freedom Based Business &mdash; Kindle Search</div>
+    <table>
+      <thead><tr><th>Book</th><th class="tc">BSR</th><th class="tr">Rev / Mo</th><th class="tc">Reviews</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Freedom-Based Business Method</strong> <span class="badge" style="background:rgba(0,181,173,.15);color:var(--teal);font-size:9px;">Ceiling</span></td><td class="tc">46,792</td><td class="tr" style="color:var(--teal-d);font-weight:700;">£219</td><td class="tc">115</td></tr>
+        <tr><td>One, Two &hellip; Free</td><td class="tc">227,696</td><td class="tr">&mdash;</td><td class="tc">62</td></tr>
+        <tr><td><strong>Escape the 9&ndash;5 (Your book)</strong> <span class="badge b-orange" style="font-size:9px;">You</span></td><td class="tc">522,537</td><td class="tr">£0.77</td><td class="tc">0</td></tr>
+        <tr><td>Freedom By Design</td><td class="tc">1,033,036</td><td class="tr">&mdash;</td><td class="tc">21</td></tr>
+        <tr><td>Monetize Your Message</td><td class="tc">&mdash;</td><td class="tr">&mdash;</td><td class="tc">64</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">Freedom Based Business &mdash; Books (Paperback/Hardcover)</div>
+    <table>
+      <thead><tr><th>Book</th><th class="tc">BSR</th><th class="tr">Rev / Mo</th><th class="tc">Reviews</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Freedom-Based Business Method</strong> <span class="badge" style="background:rgba(0,181,173,.15);color:var(--teal);font-size:9px;">Ceiling</span></td><td class="tc">4,065</td><td class="tr" style="color:var(--teal-d);font-weight:700;">£3,368</td><td class="tc">115</td></tr>
+        <tr><td>$100M Money Models (ebook)</td><td class="tc">33,966</td><td class="tr" style="color:var(--teal-d);font-weight:700;">£252</td><td class="tc">1,311</td></tr>
+        <tr><td>Inside the Mind of Sales</td><td class="tc">84,114</td><td class="tr">£196</td><td class="tc">295</td></tr>
+        <tr><td>$100M Leads (hardcover)</td><td class="tc">60,103</td><td class="tr">£450</td><td class="tc">6,410</td></tr>
+        <tr><td>The Subtle Art of Leadership</td><td class="tc">54,096</td><td class="tr">£51</td><td class="tc">38</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="callout callout-orange mb">
+  <strong>Key insight:</strong> The Freedom-Based Business Method hardcover earns £3,367/month with 115 reviews and no sponsored ads running on the primary keyword. This means the keyword is winnable with a well-reviewed new title and a modest ad budget. The Kindle-only version of the same book earns just £219/month &mdash; the format difference alone is worth 15&times; more revenue.
+</div>
+
+<!-- KEYWORDS -->
+<div id="keywords" style="position:relative;top:-48px;"></div>
+<div class="sec-label">Keywords</div>
+
+<div class="callout" style="margin-bottom:18px;">
+  <strong>Keyword research for &ldquo;freedom based business&rdquo; and &ldquo;escape the 9&ndash;5.&rdquo;</strong> Your book is already on page one for the primary term. The goal now is to load all 7 KDP keyword fields with buyer-intent variations to capture adjacent searches. Use the Readerbull Recommended panel first.
+</div>
+<div class="kw-tool">
+  <div class="kw-panel">
+    <div class="kw-panel-hdr">
+      <span><i class="ti ti-brand-amazon" style="margin-right:6px;font-size:14px;vertical-align:middle;"></i>Amazon Keywords</span>
+      <span class="kw-count" id="amazon-count">10</span>
+    </div>
+    <div class="kw-search">
+      <input type="text" id="amazon-search" placeholder="Search keywords&hellip;" oninput="filterTable('amazon-tbody','amazon-count',this.value)">
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="kw-table">
+        <thead><tr><th>Keyword</th><th class="tr">Volume</th><th class="tc">Status</th><th></th></tr></thead>
+        <tbody id="amazon-tbody">
+          <tr><td class="kw-word">freedom based business</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">freedom based business book</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">escape the 9 to 5 book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">how to escape the rat race</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">quit your job start a business book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">freedom based business model</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-high">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">personal transformation business book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">work for yourself book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Use</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">self employment guide book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-low">Skip</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">passive income book UK</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-low">Skip</span></td><td><button class="kw-add">+ Add</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="kw-panel">
+    <div class="kw-panel-hdr rec">
+      <span><div style="display:inline-block;width:66px;height:66px;overflow:hidden;vertical-align:middle;margin-right:10px;flex-shrink:0;border-radius:50%;"><img src="logo3.png" style="width:66px;height:auto;display:block;"></div>Readerbull Recommended Keywords</span>
+      <span class="kw-count" id="rec-count">7</span>
+    </div>
+    <div class="kw-search">
+      <input type="text" id="rec-search" placeholder="Filter recommendations&hellip;" oninput="filterTable('rec-tbody','rec-count',this.value)">
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="kw-table">
+        <thead><tr><th>Keyword</th><th class="tr">Volume</th><th class="tc">Status</th><th></th></tr></thead>
+        <tbody id="rec-tbody">
+          <tr><td class="kw-word">freedom based business</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-high">Priority</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">freedom based business book</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-high">Priority</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">escape the 9 to 5 book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Best Fit</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">freedom based business model</td><td class="tr kw-vol">Active</td><td class="tc"><span class="comp-med">Best Fit</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">how to escape the rat race</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Best Fit</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">quit your job start a business</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Best Fit</span></td><td><button class="kw-add">+ Add</button></td></tr>
+          <tr><td class="kw-word">personal transformation business book</td><td class="tr kw-vol">&mdash;</td><td class="tc"><span class="comp-med">Best Fit</span></td><td><button class="kw-add">+ Add</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:12px 14px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);line-height:1.5;">
+      Volume data from Amazon.co.uk keyword research. Verify before use. Buyer-intent terms targeting readers actively searching for career-change and business-building content.
+    </div>
+  </div>
+</div>
+
+<!-- QUICK WINS -->
+<div id="quick-wins" style="position:relative;top:-48px;"></div>
+<div class="sec-label">Quick Wins</div>
+<div class="card mb">
+  <div class="card-hdr">Do These in Order: Sequence Matters</div>
+  <div class="step step-orange">
+    <div class="step-num num-orange">1</div>
+    <div>
+      <div class="step-t">Update your 7 KDP keyword fields this week</div>
+      <div class="step-b">You are already on page one. Keep &ldquo;freedom based business&rdquo; and &ldquo;freedom based business book&rdquo; active, and fill the remaining 5 fields with buyer-intent variations from the Readerbull panel above. Takes 15 minutes. This is the easiest win on this list.</div>
+    </div>
+  </div>
+  <div class="step step-orange">
+    <div class="step-num num-orange">2</div>
+    <div>
+      <div class="step-t">Launch an ARC campaign to build to 15 reviews</div>
+      <div class="step-b">BookSirens or Booksprout can get your book in front of opted-in business-book readers within days. Target 20&ndash;30 ARC copies. Even 10&ndash;15 returned reviews transforms your listing from &ldquo;new and unproven&rdquo; to &ldquo;credible and reviewed.&rdquo; This unlocks everything else.</div>
+    </div>
+  </div>
+  <div class="step step-orange">
+    <div class="step-num num-orange">3</div>
+    <div>
+      <div class="step-t">Publish a paperback edition through KDP Print</div>
+      <div class="step-b">The ceiling competitor earns £3,367/month from a hardcover. Your Kindle-only listing earns £0.77. A paperback changes the visual weight of your listing in search results, unlocks Sponsored Products on the physical format, and lets you price at £12&ndash;£14 immediately.</div>
+    </div>
+  </div>
+  <div class="step step-teal">
+    <div class="step-num num-teal">4</div>
+    <div>
+      <div class="step-t">Launch Amazon Ads once you hit 15 reviews</div>
+      <div class="step-b">Start with a Sponsored Products Auto campaign at £5&ndash;10/day. After 4 weeks, add a manual campaign targeting &ldquo;freedom based business book,&rdquo; &ldquo;escape the 9 to 5 book,&rdquo; and related terms. The ceiling competitor is not running ads on the primary keyword &mdash; this is a direct opportunity.</div>
+    </div>
+  </div>
+  <div class="step step-teal">
+    <div class="step-num num-teal">5</div>
+    <div>
+      <div class="step-t">Plan the second book: &ldquo;The Freedom Based Business Model&rdquo;</div>
+      <div class="step-b">Research confirms &ldquo;freedom based business model&rdquo; as a separate profitable keyword. A second title targeting this phrase creates a two-book catalogue in the same niche. Two books in the same niche reinforce each other and generate from multiple search paths simultaneously.</div>
+    </div>
+  </div>
+</div>
+
+<!-- JORDAN'S OBSERVATION -->
+<div class="card mb">
+  <div class="card-hdr">Jordan&rsquo;s Observation</div>
+  <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Being on page one before a single review has landed is a genuinely strong start. Most new titles spend weeks invisible. You are already where authors work months to reach. The freedom-based business niche has a real ceiling &mdash; £3,367/month &mdash; and the dominant title is not even running ads on the main keyword. That gap is yours to take.</p>
+  <p style="font-size:13px;color:var(--mid);line-height:1.7;">The path is clear: reviews first, then paperback, then ads, then a second title. Each step builds on the last. The organic visibility is already working for you. The priority now is turning that visibility into a listing that converts.</p>
+</div>
+
+</div><!-- end wrap -->
+
+<div class="ftr">Readerbull Book Opportunity Audit &mdash; Confidential &mdash; Prepared by Readerbull &mdash; June 2026</div>
+
+</div><!-- end .main -->
+
+<script>
+function filterTable(tbodyId, countId, val) {
+  var rows = document.getElementById(tbodyId).querySelectorAll('tr');
+  var v = val.toLowerCase(); var c = 0;
+  rows.forEach(function(r) { var t = r.textContent.toLowerCase(); var show = !v || t.includes(v); r.style.display = show ? '' : 'none'; if(show) c++; });
+  document.getElementById(countId).textContent = c;
+}
+function toggleSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('mob-overlay');sb.classList.toggle('open');ov.classList.toggle('open');}
+window.addEventListener('scroll',function(){var btn=document.querySelector('.scroll-top');if(btn){if(window.scrollY>300)btn.classList.add('visible');else btn.classList.remove('visible');}});
+</script>
+</body>
+</html>
